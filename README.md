@@ -53,6 +53,7 @@ DB_PASSWORD=
    ```bash
    php artisan migrate
    ```
+1. You can import database sql from db_dump directory.
 ---
 
 ## **Usage**
@@ -112,3 +113,6 @@ MAIL_FROM_ADDRESS=victorjonathon@gmail.com
 MAIL_FROM_NAME="Health Monitor"
 
 ---
+
+### **5. POSTMAIN FILE**
+ You can import postman file with all api endpoints for testing. The file is: Server_Health_Check.postman_collection.json
