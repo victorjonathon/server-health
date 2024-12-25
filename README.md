@@ -114,5 +114,5 @@ MAIL_FROM_NAME="Health Monitor"
 
 ---
 
-### **5. POSTMAIN FILE**
+### **5. POSTMAN FILE**
  You can import postman file with all api endpoints for testing. The file is: Server_Health_Check.postman_collection.json
