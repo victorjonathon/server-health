@@ -93,23 +93,27 @@ class checkServers extends Command
      */
     private function updateServerStatus(Server $server, $previousStatus)
     {
-        $recentRequests = $server->requests()->latest()->take(5)->get();
-        $healthyCount = $recentRequests->where('status', 'Success')->count();
+        $recentRequests = $server->requests()->latest()->take(5)->pluck('status');
+        $top5 = $recentRequests->toArray();
+        $top3 = $recentRequests->take(3)->toArray();
 
-        if ($healthyCount >= 5) {
-            $server->status = 'Healthy';
-        } elseif ($recentRequests->count() - $healthyCount >= 3) {
-            $server->status = 'Unhealthy';
-        } else {
-            $server->status = 'Unknown';
+        if(count(array_unique($top5)) == 1 && array_unique($top5)[0] == 'Success'){
+            $newStatus = 'Healthy';
+        }
+        if(count(array_unique($top3)) == 1 && array_unique($top3)[0] == 'Failure'){
+            $newStatus = 'Unhealthy';
         }
 
-        $server->save();
+        if($previousStatus !== $newStatus){
+            $server->status = $newStatus;
+            $server->save();
+        }
 
-        // Send email if status has changed to Unhealthy
-        if ($previousStatus === 'Healthy' AND $server->status === 'Unhealthy') {
+
+        // Send an email notification if status changes from Healthy to Unhealthy
+        if ($previousStatus === 'Healthy' && $newStatus === 'Unhealthy') {
             $this->sendStatusChangeEmail($server, 'Unhealthy');
-         }
+        }
     }
 
     /**
